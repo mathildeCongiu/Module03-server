@@ -3,7 +3,8 @@ const router = express.Router();
 const createError = require("http-errors");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
-const User = require("../models/user");
+const BusinessUser = require("../models/BusinessUser");
+const AssoUser = require("../models/AssoUser");
 
 // HELPER FUNCTIONS
 const {
@@ -15,29 +16,29 @@ const {
 //  POST '/signup'
 
 router.post(
-  "/signup",
+  "/signup/business",
   // revisamos si el user no está ya logueado usando la función helper (chequeamos si existe req.session.currentUser)
   isNotLoggedIn(),
   // revisa que se hayan completado los valores de username y password usando la función helper
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const { name, email, password, logo, street, number, flat, city, postcode, country, phoneNumber, description, typeName, pickupDate, pickupPlace } = req.body;
 
     try {
       // chequea si el username ya existe en la BD
-      const usernameExists = await User.findOne({ username }, "username");
+      const emailExists = await BusinessUser.findOne({ email }, "email");
       // si el usuario ya existe, pasa el error a middleware error usando next()
-      if (usernameExists) return next(createError(400));
+      if (emailExists) return next(createError(400));
       else {
         // en caso contratio, si el usuario no existe, hace hash del password y crea un nuevo usuario en la BD
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
-        const newUser = await User.create({ username, password: hashPass });
+        const newBusinessUser = await BusinessUser.create({ email, password: hashPass, name, logo, address: {street, number, flat, city, postcode, country}, phoneNumber, description, type: {name: typeName}, pickup: {date: pickupDate, place: pickupPlace}});
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
-        req.session.currentUser = newUser;
+        req.session.currentUser = newBusinessUser;
         res
           .status(200) //  OK
-          .json(newUser);
+          .json(newBusinessUser);
       }
     } catch (error) {
       next(error);
@@ -50,14 +51,14 @@ router.post(
 // chequea que el usuario no esté logueado usando la función helper (chequea si existe req.session.currentUser)
 // revisa que el username y el password se estén enviando usando la función helper
 router.post(
-  "/login",
+  "/login/business",
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
       // revisa si el usuario existe en la BD
-      const user = await User.findOne({ username });
+      const user = await BusinessUser.findOne({ email });
       // si el usuario no existe, pasa el error al middleware error usando next()
       if (!user) {
         next(createError(404));
@@ -92,12 +93,12 @@ router.post("/logout", isLoggedIn(), (req, res, next) => {
 // GET '/private'   --> Only for testing
 
 // revisa si el usuario está logueado usando la función helper (chequea si existe la sesión), y devuelve un mensaje
-router.get("/private", isLoggedIn(), (req, res, next) => {
-  //  - setea el código de estado y devuelve un mensaje de respuesta json
-  res
-    .status(200) // OK
-    .json({ message: "Test - User is logged in" });
-});
+// router.get("/private", isLoggedIn(), (req, res, next) => {
+//   //  - setea el código de estado y devuelve un mensaje de respuesta json
+//   res
+//     .status(200) // OK
+//     .json({ message: "Test - User is logged in" });
+// });
 
 // GET '/me'
 

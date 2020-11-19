@@ -12,6 +12,8 @@ const cors = require("cors");
 
 const index = require("./routes/index");
 const auth = require("./routes/auth");
+// const privateAsso = require("./routes/privateAsso");
+// const privateBusiness = require("./routes/privateBusiness");
 
 // MONGOOSE CONNECTION
 mongoose
@@ -67,6 +69,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // ROUTER MIDDLEWARE
 app.use("/", index);
 app.use("/auth", auth);
+// app.use("/privateAsso", privateAsso);
+// app.use("/privateBusiness", privateBusiness);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler

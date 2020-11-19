@@ -24,8 +24,8 @@ const businessUserSchema = new Schema({
     name: {type: String, required : true},
     img: {type: String}
   },
-  pickUp: {
-    date: {type: Date, required: true},
+  pickup: {
+    date: {type: Date},
     place: {type: String, required: true},
   },
 
