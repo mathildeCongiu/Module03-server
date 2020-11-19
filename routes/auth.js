@@ -22,7 +22,23 @@ router.post(
   // revisa que se hayan completado los valores de username y password usando la función helper
   validationLoggin(),
   async (req, res, next) => {
-    const { name, email, password, logo, street, number, flat, city, postcode, country, phoneNumber, description, typeName, pickupDate, pickupPlace } = req.body;
+    const {
+      name,
+      email,
+      password,
+      logo,
+      street,
+      number,
+      flat,
+      city,
+      postcode,
+      country,
+      phoneNumber,
+      description,
+      typeName,
+      pickupDate,
+      pickupPlace,
+    } = req.body;
 
     try {
       // chequea si el username ya existe en la BD
@@ -33,7 +49,17 @@ router.post(
         // en caso contratio, si el usuario no existe, hace hash del password y crea un nuevo usuario en la BD
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
-        const newBusinessUser = await BusinessUser.create({ email, password: hashPass, name, logo, address: {street, number, flat, city, postcode, country}, phoneNumber, description, type: {name: typeName}, pickup: {date: pickupDate, place: pickupPlace}});
+        const newBusinessUser = await BusinessUser.create({
+          email,
+          password: hashPass,
+          name,
+          logo,
+          address: { street, number, flat, city, postcode, country },
+          phoneNumber,
+          description,
+          type: { name: typeName },
+          pickup: { date: pickupDate, place: pickupPlace },
+        });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newBusinessUser;
         res
@@ -59,6 +85,88 @@ router.post(
     try {
       // revisa si el usuario existe en la BD
       const user = await BusinessUser.findOne({ email });
+      // si el usuario no existe, pasa el error al middleware error usando next()
+      if (!user) {
+        next(createError(404));
+      }
+      // si el usuario existe, hace hash del password y lo compara con el de la BD
+      // loguea al usuario asignando el document a req.session.currentUser, y devuelve un json con el user
+      else if (bcrypt.compareSync(password, user.password)) {
+        req.session.currentUser = user;
+        res.status(200).json(user);
+        return;
+      } else {
+        next(createError(401));
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/signup/association",
+  // revisamos si el user no está ya logueado usando la función helper (chequeamos si existe req.session.currentUser)
+  isNotLoggedIn(),
+  // revisa que se hayan completado los valores de username y password usando la función helper
+  validationLoggin(),
+  async (req, res, next) => {
+    const {
+      name,
+      email,
+      password,
+      logo,
+      street,
+      number,
+      flat,
+      city,
+      postcode,
+      country,
+      phoneNumber,
+      description,
+      typeName,
+    } = req.body;
+
+    try {
+      // chequea si el username ya existe en la BD
+      const emailExists = await AssoUser.findOne({ email }, "email");
+      // si el usuario ya existe, pasa el error a middleware error usando next()
+      if (emailExists) return next(createError(400));
+      else {
+        // en caso contratio, si el usuario no existe, hace hash del password y crea un nuevo usuario en la BD
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hashPass = bcrypt.hashSync(password, salt);
+        const newAssoUser = await AssoUser.create({
+          email,
+          password: hashPass,
+          name,
+          logo,
+          address: { street, number, flat, city, postcode, country },
+          phoneNumber,
+          description,
+          type: { name: typeName },
+        });
+        // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
+        req.session.currentUser = newAssoUser;
+        res
+          .status(200) //  OK
+          .json(newAssoUser);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/login/association",
+  isNotLoggedIn(),
+  validationLoggin(),
+  async (req, res, next) => {
+    const { email, password } = req.body;
+    try {
+      // revisa si el usuario existe en la BD
+      const user = await AssoUser.findOne({ email });
       // si el usuario no existe, pasa el error al middleware error usando next()
       if (!user) {
         next(createError(404));
