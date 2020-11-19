@@ -10,6 +10,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 
+const index = require("./routes/index");
 const auth = require("./routes/auth");
 
 // MONGOOSE CONNECTION
@@ -64,6 +65,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
+app.use("/", index);
 app.use("/auth", auth);
 
 // ERROR HANDLING
