@@ -53,12 +53,12 @@ router.post(
           email,
           password: hashPass,
           name,
-          logo,
-          address: { street, number, flat, city, postcode, country },
-          phoneNumber,
-          description,
+          // logo,
+          // address: { street, number, flat, city, postcode, country },
+          // phoneNumber,
+          // description,
           type: { name: typeName },
-          pickup: { date: pickupDate, place: pickupPlace },
+          // pickup: { date: pickupDate, place: pickupPlace },
         });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newBusinessUser;
