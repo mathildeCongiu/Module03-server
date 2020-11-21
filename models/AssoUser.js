@@ -20,10 +20,6 @@ const AssoUserSchema = new Schema(
     description: String,
     partnerships: [{ type: Schema.Types.ObjectId, ref: "BusinessUser" }],
     pendingPartnerships: [{ type: Schema.Types.ObjectId, ref: "BusinessUser" }],
-    type: {
-      name: { type: String, required: true },
-      img: { type: String, default: "./img/asso.png" },
-    },
   },
   {
     timestamps: {

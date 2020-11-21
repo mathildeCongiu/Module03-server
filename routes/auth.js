@@ -53,12 +53,12 @@ router.post(
           email,
           password: hashPass,
           name,
-          // logo,
-          // address: { street, number, flat, city, postcode, country },
-          // phoneNumber,
-          // description,
+          logo,
+          address: { street, number, flat, city, postcode, country },
+          phoneNumber,
+          description,
           type: { name: typeName },
-          // pickup: { date: pickupDate, place: pickupPlace },
+          pickup: { day: pickupDate, place: pickupPlace },
         });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newBusinessUser;
@@ -124,7 +124,6 @@ router.post(
       country,
       phoneNumber,
       description,
-      typeName,
     } = req.body;
 
     try {
@@ -144,7 +143,6 @@ router.post(
           address: { street, number, flat, city, postcode, country },
           phoneNumber,
           description,
-          type: { name: typeName },
         });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newAssoUser;
