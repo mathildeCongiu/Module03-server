@@ -35,6 +35,7 @@ router.put("/edit", isLoggedIn(), async (req, res, next) => {
 router.get("/search", isLoggedIn(), async (req, res, next) => {
   try {
     const businesses = await BusinessUser.find();
+    console.log(businesses)
     res.status(200).json(businesses);
   } catch (error) {
     res.json(error);
