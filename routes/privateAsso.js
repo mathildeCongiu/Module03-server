@@ -53,12 +53,13 @@ router.post("/business/:businessId", isLoggedIn(), async (req, res, next) => {
   try {
     const business = await BusinessUser.findByIdAndUpdate(businessId, {
       $push: { pendingPartnerships: assoId },
-    });
+    }).populate("pendingPartnerships");
+
     const asso = await AssoUser.findByIdAndUpdate(assoId, {
       $push: { pendingPartnerships: businessId },
-    });
+    }).populate("pendingPartnerships");
     req.session.currentUser = asso;
-    res.status(200).json(`Collaboration pending to approve`);
+    res.status(200).json(business, asso);
   } catch (error) {
     res.json(error);
   }

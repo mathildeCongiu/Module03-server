@@ -117,11 +117,11 @@ router.post("/association/accept/:assoId", isLoggedIn(), async (req, res, next) 
     const asso = await AssoUser.findByIdAndUpdate(assoId, {
       $push: { partnerships: businessId },
       $pull: { pendingPartnerships: businessId },
-    });
+    }).populate("partnerships");
     const business = await BusinessUser.findByIdAndUpdate(businessId, {
       $push: { partnerships: assoId },
       $pull: { pendingPartnerships: assoId },
-    });
+    }).populate("partnerships");
     req.session.currentUser = business;
     res.status(200).json({ message: `Collaboration accepted by ${req.session.currentUser.name}`});
   } catch (error) {
