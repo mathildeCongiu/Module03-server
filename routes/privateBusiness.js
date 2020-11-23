@@ -42,13 +42,13 @@ router.post("/products/new", isLoggedIn(), async (req, res, next) => {
     const newProduct = await Product.create({
       name,
       productType: { name: typeName },
-      today: { isAvailable, quantity },
+      // today: { isAvailable, quantity },
       owner: user._id,
     });
 
     const newBusinessUser = await BusinessUser.findByIdAndUpdate(user._id, {
       $push: { products: newProduct._id },
-    });
+    }).populate("pendingPartnerships").populate("partnerships").populate("products");;
 
     req.session.currentUser = newBusinessUser;
     res.json(newProduct);

@@ -84,7 +84,7 @@ router.post(
     const { email, password } = req.body;
     try {
       // revisa si el usuario existe en la BD
-      const user = await BusinessUser.findOne({ email }).populate("pendingPartnerships").populate("partnerships");
+      const user = await BusinessUser.findOne({ email }).populate("pendingPartnerships").populate("partnerships").populate("products");
       // si el usuario no existe, pasa el error al middleware error usando next()
       if (!user) {
         next(createError(404));
@@ -164,7 +164,9 @@ router.post(
     const { email, password } = req.body;
     try {
       // revisa si el usuario existe en la BD
-      const user = await AssoUser.findOne({ email }).populate("pendingPartnerships").populate("partnerships");
+      const user = await AssoUser.findOne({ email }).populate({path: "pendingPartnerships", populate: {path: "products"}}).populate({path: "partnerships", populate: {path: "products"}});
+      
+      
       // si el usuario no existe, pasa el error al middleware error usando next()
       if (!user) {
         next(createError(404));
