@@ -211,10 +211,19 @@ router.post("/logout", isLoggedIn(), (req, res, next) => {
 // GET '/me'
 
 // chequea si el usuario está logueado usando la función helper (chequea si existe la sesión)
-router.get("/me", isLoggedIn(), (req, res, next) => {
+router.get("/me", isLoggedIn(), async (req, res, next) => {
+let updatedUser
+  if (req.session.currentUser.relationship === "business") {
+    updatedUser = await BusinessUser.findById(req.session.currentUser._id).populate("pendingPartnerships").populate("partnerships").populate("products");
+  } else {
+    updatedUser = await AssoUser.findById(req.session.currentUser._id).populate("pendingPartnerships").populate("partnerships").populate("products");
+  }
   // si está logueado, previene que el password sea enviado y devuelve un json con los datos del usuario (disponibles en req.session.currentUser)
-  req.session.currentUser.password = "*";
+  updatedUser.password = "*";
+  req.session.currentUser = updatedUser;
   res.json(req.session.currentUser);
 });
+
+
 
 module.exports = router;
