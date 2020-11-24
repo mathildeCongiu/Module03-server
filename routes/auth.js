@@ -216,7 +216,7 @@ let updatedUser
   if (req.session.currentUser.relationship === "business") {
     updatedUser = await BusinessUser.findById(req.session.currentUser._id).populate("pendingPartnerships").populate("partnerships").populate("products");
   } else {
-    updatedUser = await AssoUser.findById(req.session.currentUser._id).populate("pendingPartnerships").populate("partnerships").populate("products");
+    updatedUser = await AssoUser.findById(req.session.currentUser._id).populate({path: "pendingPartnerships", populate: {path: "products"}}).populate({path: "partnerships", populate: {path: "products"}});
   }
   // si está logueado, previene que el password sea enviado y devuelve un json con los datos del usuario (disponibles en req.session.currentUser)
   updatedUser.password = "*";

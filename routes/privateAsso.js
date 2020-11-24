@@ -34,7 +34,7 @@ router.put("/edit", isLoggedIn(), async (req, res, next) => {
 
 router.get("/search", isLoggedIn(), async (req, res, next) => {
   try {
-    const businesses = await BusinessUser.find();
+    const businesses = await BusinessUser.find().populate("products");
     // console.log(businesses)
     res.status(200).json(businesses);
   } catch (error) {
@@ -59,7 +59,7 @@ router.post("/business/:businessId", isLoggedIn(), async (req, res, next) => {
       $push: { pendingPartnerships: businessId },
     }).populate("pendingPartnerships");
     req.session.currentUser = asso;
-    res.status(200).json(business, asso);
+    res.status(200).json(asso);
   } catch (error) {
     res.json(error);
   }
