@@ -7,7 +7,7 @@ const businessUserSchema = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    logo: String,
+    logo: { type: String, default: "img/logo.png" },
     address: {
       street: { type: String, required: true },
       number: { type: Number, required: true },
@@ -27,7 +27,7 @@ const businessUserSchema = new Schema(
     },
     pickup: {
       day: { type: String },
-      // hour: { type:  }
+      hour: { type: String },
       place: { type: String },
     },
   },
