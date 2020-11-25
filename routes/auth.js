@@ -38,6 +38,7 @@ router.post(
       typeName,
       pickupDate,
       pickupPlace,
+      pickupHour
     } = req.body;
 
     try {
@@ -58,7 +59,7 @@ router.post(
           phoneNumber,
           description,
           type: { name: typeName },
-          pickup: { day: pickupDate, place: pickupPlace },
+          pickup: { day: pickupDate, place: pickupPlace, hour: pickupHour },
         });
         // luego asignamos el nuevo documento user a req.session.currentUser y luego enviamos la respuesta en json
         req.session.currentUser = newBusinessUser;
