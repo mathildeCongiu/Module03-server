@@ -7,7 +7,7 @@ const AssoUserSchema = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    logo: { type: String, default: "img/logo.png" },
+    logo: { type: String, default: "/img/logo.png" },
     address: {
       street: { type: String, required: true },
       number: { type: Number, required: true },
