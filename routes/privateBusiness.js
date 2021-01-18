@@ -75,6 +75,7 @@ router.put("/products/edit/:id", isLoggedIn(), async (req, res, next) => {
 
 router.delete("/products/:id", isLoggedIn(), async (req, res, next) => {
   const productId = req.params.id;
+  const user = req.session.currentUser;
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     res.status(400).json({ message: "Specified id is not valid" });
     return;
@@ -82,6 +83,11 @@ router.delete("/products/:id", isLoggedIn(), async (req, res, next) => {
 
   try {
     const newProduct = await Product.findByIdAndDelete(productId);
+
+    const newBusinessUser = await BusinessUser.findByIdAndUpdate(user._id, {
+      $pull: { products: newProduct._id },
+    }).populate("pendingPartnerships").populate("partnerships").populate("products");;
+
     res
       .status(200)
       .json({ message: `Product with ${productId} is removed successfully.` });
