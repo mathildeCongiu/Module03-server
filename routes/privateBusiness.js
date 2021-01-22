@@ -19,6 +19,7 @@ router.get("/dashboard", isLoggedIn(), (req, res, next) => {
 });
 
 router.put("/edit", isLoggedIn(), async (req, res, next) => {
+  console.log(req)
   const userId = req.session.currentUser._id;
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     res.status(400).json({ message: "Specified id is not valid" });
