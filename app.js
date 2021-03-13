@@ -31,7 +31,7 @@ const app = express();
 // CORS MIDDLEWARE SETUP
 app.use(
   cors({
-    // credentials: true,
+    credentials: true,
     origin: [process.env.PUBLIC_DOMAIN, 'http://volunthero.herokuapp.com', 'http://volunthero.herokuapp.com'],
   })
 );
