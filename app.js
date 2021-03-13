@@ -37,12 +37,23 @@ app.use(
 );
 
 // app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.setHeader("Access-Control-Allow-Origin", "*");
 //   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS, DELETE');
 //   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 //   res.setHeader('Access-Control-Allow-Credentials', true);
 //   next();
 // });
+
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      process.env.PUBLIC_DOMAIN,
+      "http://volunthero.herokuapp.com",
+      "https://volunthero.herokuapp.com",
+    ],
+  })
+);
 
 // SESSION MIDDLEWARE
 app.use(
@@ -72,14 +83,13 @@ app.use("/", index);
 app.use("/auth", auth);
 app.use("/association", privateAsso);
 app.use("/business", privateBusiness);
-app.use('/api', require('./routes/file-upload-routes'));
+app.use("/api", require("./routes/file-upload-routes"));
 
 // ROUTE FOR SERVING REACT APP (index.html)
 app.use((req, res) => {
   // If no routes match, send them the React HTML.
   res.sendFile(__dirname + "/public/index.html");
 });
-
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
